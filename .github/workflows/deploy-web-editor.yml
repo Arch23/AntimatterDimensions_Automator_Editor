@@ -1,0 +1,69 @@
+name: Build and deploy web editor
+
+on:
+  push:
+    paths:
+      - "apps/web-editor/**"
+      - "packages/automator-language/**"
+      - "extensions/vscode-extension/Examples/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/deploy-web-editor.yml"
+  pull_request:
+    paths:
+      - "apps/web-editor/**"
+      - "packages/automator-language/**"
+      - "extensions/vscode-extension/Examples/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/deploy-web-editor.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Enable pnpm with Corepack
+        run: corepack enable
+      - name: Install workspace dependencies
+        run: corepack pnpm install --frozen-lockfile
+      - name: Run language and web adapter tests
+        run: corepack pnpm test
+      - name: Build web editor for repository Pages path
+        run: corepack pnpm --filter @adme/web-editor build
+        env:
+          VITE_BASE_PATH: ${{ github.event.repository.name == format('{0}.github.io', github.repository_owner) && '/' || format('/{0}/', github.event.repository.name) }}
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: apps/web-editor/dist
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

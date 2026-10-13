@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "scripts": {
-    "test": "corepack pnpm --filter @adme/automator-language test",
+    "test": "corepack pnpm --filter @adme/automator-language --filter @adme/web-editor test",
     "package:vscode": "corepack pnpm --filter antimatter-dimensions-automator package"
   }
 }

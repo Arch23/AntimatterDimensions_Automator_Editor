@@ -35,6 +35,7 @@ import {
 import { tokenizeAutomatorLine as tokenizeLine } from "@adme/automator-language/highlighting";
 import initialScript from "../../../extensions/vscode-extension/Examples/climb_ep.aut?raw";
 import { automatorLanguage } from "./automator-language";
+import { completionFilterText, completionStart, diagnosticRange } from "./editor-adapters.cjs";
 import { readDraft, writeDraft, type Draft } from "./storage";
 
 const automatorHighlighting = HighlightStyle.define([
@@ -87,27 +88,6 @@ const editorTheme = EditorView.theme({
   ".cm-nonmatchingBracket": { color: "#ff5370", outline: "1px solid #ff5370" }
 }, { dark: true });
 
-function completionStart(linePrefix: string, line: { from: number }, item: AutomatorCompletionItem): number {
-  if (item.replaceLine) {
-    const indentation = linePrefix.match(/^\s*/)?.[0].length ?? 0;
-    return line.from + indentation;
-  }
-  if (item.replaceFrom !== undefined) return line.from + item.replaceFrom;
-
-  const label = item.label.toLowerCase().replace(/\s+/g, " ");
-  const possibleStarts = [linePrefix.length];
-  for (let i = 0; i < linePrefix.length; i++) {
-    if (/\s/.test(linePrefix[i]) && i + 1 < linePrefix.length) possibleStarts.push(i + 1);
-  }
-  const currentWord = linePrefix.match(/\S+$/);
-  if (currentWord) possibleStarts.push(linePrefix.length - currentWord[0].length);
-  const matchingStarts = possibleStarts.filter(start => {
-    const suffix = linePrefix.slice(start).trim().replace(/\s+/g, " ").toLowerCase();
-    return suffix.length > 0 && label.startsWith(suffix);
-  });
-  return line.from + (matchingStarts.length ? Math.min(...matchingStarts) : possibleStarts.at(-1)!);
-}
-
 function automatorCompletionSource(context: CompletionContext): CompletionResult | null {
   const line = context.state.doc.lineAt(context.pos);
   const linePrefix = line.text.slice(0, context.pos - line.from);
@@ -127,10 +107,10 @@ function automatorCompletionSource(context: CompletionContext): CompletionResult
   const options: Completion[] = items.map(item => ({
     label: item.label,
     detail: item.detail,
-    filterText: item.filterText ?? item.label.split(/[\s,]+/).find(word => word.toLowerCase().startsWith(query)),
+    filterText: completionFilterText(item, query),
     type: item.detail.toLowerCase().includes("currency") ? "type" : "keyword",
     apply(view, completion, _from, to) {
-      const from = completionStart(linePrefix, line, item);
+      const from = completionStart(linePrefix, line.from, item);
       view.dispatch({
         ...insertCompletionText(view.state, item.insertText, from, to),
         annotations: pickedCompletion.of(completion)
@@ -150,11 +130,9 @@ function automatorTokens(line: string) {
 function lintDiagnostics(source: string, document: EditorState["doc"]): Diagnostic[] {
   return validate(source).map((diagnostic: AutomatorDiagnostic) => {
     const line = document.line(Math.min(diagnostic.line + 1, document.lines));
-    const start = Math.min(diagnostic.start, line.length);
-    const end = Math.min(Math.max(diagnostic.end, start), line.length);
+    const range = diagnosticRange(line, diagnostic);
     return {
-      from: line.from + start,
-      to: line.from + end,
+      ...range,
       severity: diagnostic.severity === "warning" || diagnostic.severity === "info" || diagnostic.severity === "hint"
         ? diagnostic.severity
         : "error",

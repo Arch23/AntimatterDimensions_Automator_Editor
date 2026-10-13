@@ -40,3 +40,9 @@ corepack pnpm --filter @adme/web-editor preview
 ```
 
 Vite uses `/` as the default base path for local development. Set `VITE_BASE_PATH` at build time to a repository subpath when preparing a GitHub Pages build, for example `VITE_BASE_PATH=/my-repository/`.
+
+## GitHub Pages deployment
+
+The repository workflow at `.github/workflows/deploy-web-editor.yml` installs the pnpm workspace, runs both Node test suites, builds the web app with the repository-specific Pages path, and publishes `apps/web-editor/dist`. It runs for pull requests and pushes that change the web editor, shared language package, example scripts, workspace manifests, or the workflow itself. Deployment is limited to pushes on the repository's default branch.
+
+To enable publishing, open **Settings > Pages** and select **GitHub Actions** as the build and deployment source. The workflow publishes a project site at `https://<owner>.github.io/<repository>/`; for a user or organization site named `<owner>.github.io`, it builds with the root path. Pull requests run tests and a production build without deploying. PWA and offline caching are not configured.

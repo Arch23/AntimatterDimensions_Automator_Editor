@@ -126,6 +126,8 @@ Status: implemented. The web editor has user-triggered copy-all and paste action
 - Document local development, supported language checks, draft behavior, and the repository Pages settings needed to enable deployment.
 - Consider installable PWA/offline behavior after the first usable release.
 
+Status: local verification and deployment setup implemented. The shared and web-adapter Node suites cover representative fixtures, contextual completion replacement/filtering, diagnostic range mapping, and safe formatter behavior. The production build succeeds with `/adme-automator-tools/` and emits assets under that path. `.github/workflows/deploy-web-editor.yml` runs on web/shared-language/example changes and pull requests, and deploys only pushes to the repository default branch. Local development, language-check limits, draft recovery, and Pages setup are documented. Remaining: review the app in a browser at desktop and phone sizes, push the workflow to GitHub, select **Settings > Pages > GitHub Actions**, then verify the first Actions deployment. PWA and offline behavior remain deferred.
+
 ## Acceptance checklist
 
 - Existing VS Code extension behavior and tests remain intact.

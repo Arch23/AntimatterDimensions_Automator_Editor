@@ -15,6 +15,10 @@ The game's Automator is the authority on whether a script is valid and can run. 
 
 See [Technical Overview](TECHNICAL-OVERVIEW.md) for architecture and implementation details. The [Automator Language Reference](extensions/vscode-extension/AUTOMATOR-LANGUAGE.md) describes the syntax supported by the editor tools.
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
 ## Requirements
 
 - Node.js `^20.19.0` or `>=22.12.0` (Vite 8 requirement).
@@ -37,7 +41,7 @@ corepack pnpm --filter @adme/web-editor dev
 
 Open <http://localhost:5173/>. Keep the terminal running while using the app; press `Ctrl+C` to stop it. More web-editor commands and current browser limitations are documented in [apps/web-editor/README.md](apps/web-editor/README.md).
 
-The browser editor currently provides editing, syntax highlighting, shared contextual completions and syntax diagnostics, text-file import/download, clipboard actions, local draft recovery, and safe indentation formatting. Browser snippet expansion and deployment automation have not been implemented yet. See the plan for current phase status.
+The browser editor currently provides editing, syntax highlighting, shared contextual completions and syntax diagnostics, text-file import/download, clipboard actions, local draft recovery, and safe indentation formatting. Browser snippet expansion and PWA/offline behavior are not included. GitHub Pages deployment is configured by the web-editor workflow; see the plan and web-editor README for setup and remaining review.
 
 ## Run the VS Code extension
 
@@ -45,7 +49,7 @@ Open `extensions/vscode-extension` in VS Code and press `F5` to launch an Extens
 
 ## Test and package
 
-Run the shared language package tests:
+Run the shared language and web-editor adapter tests:
 
 ```sh
 corepack pnpm test

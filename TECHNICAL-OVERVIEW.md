@@ -62,9 +62,9 @@ The app's source is in `apps/web-editor/src`:
 
 Document edits are autosaved to `localStorage` after a short debounce and flushed when the page is closed. Startup draft recovery is an explicit Restore/Dismiss choice; it does not replace the current initial script automatically. Clipboard read/write calls are made only from user-triggered actions and report permission failures in the status area. Import reads plain text, export downloads plain text, and **Format script** calls the shared leading-indentation formatter as one editor transaction.
 
-Run locally with `corepack pnpm --filter @adme/web-editor dev`; build with `corepack pnpm --filter @adme/web-editor build`. The build output is `apps/web-editor/dist`.
+Run locally with `corepack pnpm --filter @adme/web-editor dev`; build with `corepack pnpm --filter @adme/web-editor build`. Run shared and web-adapter tests with `corepack pnpm test`. The build output is `apps/web-editor/dist`.
 
-Vite's `base` defaults to `/`. Set `VITE_BASE_PATH` at build time to serve from a repository subpath, such as `/repository-name/`. No GitHub Pages workflow or production deployment configuration is present yet. Local development and preview details are in [apps/web-editor/README.md](apps/web-editor/README.md).
+Vite's `base` defaults to `/`. Set `VITE_BASE_PATH` at build time to serve from a repository subpath, such as `/repository-name/`. `.github/workflows/deploy-web-editor.yml` tests and builds on relevant pull requests and pushes, then deploys only the default branch through GitHub Pages. It expects Pages' publishing source to be set to **GitHub Actions**. Local development and deployment setup are in [apps/web-editor/README.md](apps/web-editor/README.md).
 
 ## VS Code extension
 
@@ -74,7 +74,7 @@ Run the extension in a development host by opening `extensions/vscode-extension`
 
 ## Tests and fixtures
 
-The shared Node test suite is `packages/automator-language/test/automator.test.js`. Run it from the repository root with `corepack pnpm test`. It covers validation, completion behavior, formatting preservation/refusal, snippet expansion, highlighting categories, and representative `.aut` examples under `extensions/vscode-extension/Examples`.
+The shared Node test suite is `packages/automator-language/test/automator.test.js`; browser-adapter mapping tests are in `apps/web-editor/test/editor-adapters.test.cjs`. Run both from the repository root with `corepack pnpm test`. They cover validation, completion behavior and CodeMirror adapter mappings, formatting preservation/refusal, snippet expansion, highlighting categories, diagnostic ranges, and representative `.aut` examples under `extensions/vscode-extension/Examples`.
 
 Use the real Automator examples and language reference as fixtures when changing editor behavior. The reference and older syntax notes document more than the validator can establish; implementation and diagnostics must follow the actual shared code.
 
