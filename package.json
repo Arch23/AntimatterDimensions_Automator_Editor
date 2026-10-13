@@ -1,0 +1,9 @@
+{
+  "name": "antimatter-dimensions-automator-tools",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "test": "corepack pnpm --filter @adme/automator-language test",
+    "package:vscode": "corepack pnpm --filter antimatter-dimensions-automator package"
+  }
+}

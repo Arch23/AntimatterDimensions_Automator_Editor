@@ -1,0 +1,128 @@
+{
+  "scopeName": "source.automator",
+  "patterns": [
+    {
+      "name": "comment.line.number-sign.automator",
+      "match": "^\\s*(#|//).*$"
+    },
+    {
+      "name": "string.quoted.double.automator",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.automator"
+        }
+      },
+      "end": "\"|$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.automator"
+        }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape.automator",
+          "match": "\\\\."
+        }
+      ]
+    },
+    {
+      "name": "meta.interpolation.snippet.automator",
+      "match": "(\\{)([a-zA-Z0-9_-]+)(\\})",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.snippet.automator"
+        },
+        "2": {
+          "name": "entity.name.function.snippet.automator"
+        },
+        "3": {
+          "name": "punctuation.definition.snippet.automator"
+        }
+      }
+    },
+    {
+      "name": "keyword.control.automator",
+      "match": "(?i)^\\s*(if|until|while)\\b"
+    },
+    {
+      "name": "keyword.command.time-studies.automator",
+      "match": "(?i)^\\s*(studies)\\s+(respec)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.command.automator"
+        },
+        "2": {
+          "name": "keyword.modifier.automator"
+        }
+      }
+    },
+    {
+      "name": "keyword.command.time-studies.automator",
+      "match": "(?i)^\\s*(studies)\\s+(nowait\\s+)?(load|purchase)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.command.automator"
+        },
+        "2": {
+          "name": "keyword.modifier.automator"
+        },
+        "3": {
+          "name": "keyword.command.subcommand.automator"
+        }
+      }
+    },
+    {
+      "name": "keyword.command.automator",
+      "match": "(?i)^\\s*(infinity|eternity|reality|unlock|start|auto|notify|wait|pause|stop)\\b"
+    },
+    {
+      "name": "keyword.command.automator",
+      "match": "(?i)^\\s*(black)\\s+(hole)\\b",
+      "captures": {
+        "1": {
+          "name": "keyword.command.automator"
+        },
+        "2": {
+          "name": "keyword.command.automator"
+        }
+      }
+    },
+    {
+      "name": "keyword.modifier.automator",
+      "match": "(?i)\\b(nowait|respec)\\b"
+    },
+    {
+      "name": "keyword.operator.comparison.automator",
+      "match": "<=|>=|<|>"
+    },
+    {
+      "name": "constant.numeric.automator",
+      "match": "(?i)(?<![\\w.])(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:e[+-]?\\d+)?\\b"
+    },
+    {
+      "name": "support.type.currency.automator",
+      "match": "(?i)\\b(?:pending\\s+glyph\\s+level|pending\\s+(?:ip|ep|tp|rm|completions)|banked\\s+infinities|total\\s+(?:tt|completions)|spent\\s+tt|infinities|eternities|realities|completions|am|ip|ep|rm|dt|tp|rg|rep|tt)\\b"
+    },
+    {
+      "name": "support.type.currency.automator",
+      "match": "(?i)\\bec(?:[1-9]|1[0-2])\\s+completions\\b"
+    },
+    {
+      "name": "constant.language.automator",
+      "match": "(?i)\\b(?:dilation|on|off|bh1|bh2|highest|antimatter|active|passive|idle|light|dark|time)\\b"
+    },
+    {
+      "name": "keyword.operator.range.automator",
+      "match": "\\b\\d+\\s*-\\s*\\d+\\b"
+    },
+    {
+      "name": "punctuation.section.block.begin.automator",
+      "match": "\\{"
+    },
+    {
+      "name": "punctuation.section.block.end.automator",
+      "match": "\\}"
+    }
+  ]
+}

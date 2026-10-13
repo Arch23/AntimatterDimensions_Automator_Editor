@@ -1,0 +1,93 @@
+{
+  "name": "antimatter-dimensions-automator",
+  "displayName": "Antimatter Dimensions Automator",
+  "description": "Basic linting and IntelliSense for Antimatter Dimensions Automator scripts.",
+  "version": "3.0.0",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "activationEvents": [
+    "onLanguage:automator"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "automator",
+        "aliases": [
+          "Automator",
+          "automator"
+        ],
+        "extensions": [
+          ".automator",
+          ".aut"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "automator",
+        "scopeName": "source.automator",
+        "path": "./syntaxes/automator.tmLanguage.json"
+      }
+    ],
+    "semanticTokenScopes": [
+      { "language": "automator", "scopes": { "automatorControl": ["keyword.control.automator"], "automatorCommand": ["keyword.command.automator"], "automatorSubcommand": ["keyword.command.subcommand.automator"], "automatorModifier": ["keyword.modifier.automator"], "automatorCurrency": ["support.type.currency.automator"], "automatorConstant": ["constant.language.automator"], "automatorNumber": ["constant.numeric.automator"], "automatorRange": ["keyword.operator.range.automator"], "automatorOperator": ["keyword.operator.comparison.automator"], "automatorComment": ["comment.line.number-sign.automator"], "automatorString": ["string.quoted.double.automator"], "automatorSnippet": ["meta.interpolation.snippet.automator"], "automatorPunctuation": ["punctuation.section.block.begin.automator"] } }
+    ],
+    "iconThemes": [
+      {
+        "id": "antimatter-dimensions-automator-icons",
+        "label": "Antimatter Dimensions Automator Icons",
+        "path": "./file-icon-theme.json"
+      }
+    ],
+    "configurationDefaults": {
+      "[automator]": {
+        "editor.inlineSuggest.enabled": false,
+        "editor.wordBasedSuggestions": "off"
+      }
+    },
+    "commands": [
+      {
+        "command": "automator.validate",
+        "title": "Automator: Validate Script"
+      },
+      {
+        "command": "automator.build",
+        "title": "Automator: Build Script (Expand Snippets)"
+      },
+      {
+        "command": "automator.format",
+        "title": "Automator: Format Document"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "automator.build",
+          "when": "resourceLangId == automator",
+          "group": "navigation"
+        },
+        {
+          "command": "automator.format",
+          "when": "resourceLangId == automator",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node scripts/prepare-vsix.js",
+    "package": "corepack pnpm dlx @vscode/vsce package --allow-missing-repository --out ../../bin/antimatter-dimensions-automator-3.0.0.vsix"
+  },
+  "devDependencies": {
+    "@adme/automator-language": "workspace:*"
+  },
+  "license": "MIT"
+}

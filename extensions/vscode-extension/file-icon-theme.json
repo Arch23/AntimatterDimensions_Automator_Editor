@@ -1,0 +1,16 @@
+{
+  "iconDefinitions": {
+    "_automator": {
+      "iconPath": "./img/aut.png"
+    },
+    "_snippet": {
+      "iconPath": "./img/snpt.png"
+    }
+  },
+  "fileExtensions": {
+    "automator": "_automator",
+    "aut": "_automator",
+    "snippet": "_snippet",
+    "snpt": "_snippet"
+  }
+}

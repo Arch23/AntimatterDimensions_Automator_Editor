@@ -1,0 +1,9 @@
+// Template: Complete Eternity Challenge
+notify "Running Template Complete Eternity Challenge (EC11)"
+eternity respec
+studies nowait load name EC11
+auto infinity 1e4000 x highest
+auto eternity off
+start ec 11
+wait pending completions >= 5
+eternity

@@ -1,0 +1,10 @@
+// Template: Unlock Dilation
+notify "Running Template Unlock Dilation"
+auto infinity off
+auto eternity 15 seconds
+while total tt < 12900 {
+  studies nowait load name ACTV
+  studies respec
+  wait eternity
+}
+unlock dilation

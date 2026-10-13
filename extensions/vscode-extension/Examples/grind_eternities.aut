@@ -1,0 +1,7 @@
+// Template: Grind Eternities
+notify "Running Template Grind Eternities (to 1e115)"
+studies nowait load name ACTV
+auto eternity 0 ep
+auto infinity 2e28 x highest
+wait eternities > 1e115
+auto eternity off
