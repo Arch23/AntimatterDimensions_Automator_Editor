@@ -35,7 +35,6 @@ import {
   type AutomatorDiagnostic
 } from "@adme/automator-language";
 import { tokenizeAutomatorLine as tokenizeLine } from "@adme/automator-language/highlighting";
-import initialScript from "../../../extensions/vscode-extension/Examples/climb_ep.aut?raw";
 import { automatorLanguage } from "./automator-language";
 import { completionFilterText, completionStart, diagnosticRange } from "./editor-adapters.mjs";
 import { readDraft, writeDraft, type Draft } from "./storage";
@@ -59,7 +58,7 @@ const editorTheme = EditorView.theme({
     height: "100%",
     color: "#e6eaf2",
     backgroundColor: "#10141c",
-    fontSize: "15px"
+    fontSize: "var(--editor-font-size, 15px)"
   },
   ".cm-scroller": {
     overflow: "auto",
@@ -85,7 +84,7 @@ const editorTheme = EditorView.theme({
   ".cm-activeLine": { backgroundColor: "#171d27" },
   ".cm-activeLineGutter": { color: "#c8d1e0", backgroundColor: "#171d27" },
   ".cm-cursor, .cm-dropCursor": { borderLeftColor: "#82aaff" },
-  "&.cm-focused .cm-selectionBackground, .cm-selectionBackground": { backgroundColor: "#294268" },
+  "&.cm-focused .cm-selectionBackground, .cm-selectionBackground": { backgroundColor: "#376fb0" },
   ".cm-matchingBracket": { color: "#c3e88d", outline: "1px solid #c3e88d" },
   ".cm-nonmatchingBracket": { color: "#ff5370", outline: "1px solid #ff5370" }
 }, { dark: true });
@@ -235,9 +234,39 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     if (diagnosticsPanel) diagnosticsPanel.hidden = !open;
   }, { signal: buttonListeners.signal });
 
+  const wrapToggle = document.querySelector<HTMLInputElement>("#wrap-lines-toggle");
+  const appShell = parent.closest<HTMLElement>(".app-shell");
+  const wrapPreferenceKey = "adme.automator-web-editor.wrap-lines.v1";
+  let wrapLines = false;
+  try { wrapLines = window.localStorage.getItem(wrapPreferenceKey) === "true"; } catch { /* Optional preference. */ }
+  if (wrapToggle) wrapToggle.checked = wrapLines;
+  appShell?.classList.toggle("wrap-lines", wrapLines);
+  wrapToggle?.addEventListener("change", () => {
+    wrapLines = wrapToggle.checked;
+    appShell?.classList.toggle("wrap-lines", wrapLines);
+    try { window.localStorage.setItem(wrapPreferenceKey, String(wrapLines)); } catch { /* Keep this session's setting. */ }
+  }, { signal: buttonListeners.signal });
+
+  const fontSizeSelect = document.querySelector<HTMLSelectElement>("#editor-font-size");
+  const fontSizePreferenceKey = "adme.automator-web-editor.font-size.v1";
+  const allowedFontSizes = new Set(["13px", "15px", "18px"]);
+  let fontSize = "15px";
+  try {
+    const savedSize = window.localStorage.getItem(fontSizePreferenceKey);
+    if (savedSize && allowedFontSizes.has(savedSize)) fontSize = savedSize;
+  } catch { /* Optional preference. */ }
+  if (fontSizeSelect) fontSizeSelect.value = fontSize;
+  appShell?.style.setProperty("--editor-font-size", fontSize);
+  fontSizeSelect?.addEventListener("change", () => {
+    fontSize = fontSizeSelect.value;
+    if (!allowedFontSizes.has(fontSize)) return;
+    appShell?.style.setProperty("--editor-font-size", fontSize);
+    try { window.localStorage.setItem(fontSizePreferenceKey, fontSize); } catch { /* Keep this session's setting. */ }
+  }, { signal: buttonListeners.signal });
+
   const view = new EditorView({
     state: EditorState.create({
-      doc: draftRead.draft?.text ?? initialScript,
+      doc: draftRead.draft?.text ?? "",
       extensions: [
         lineNumbers({
           domEventHandlers: {
@@ -285,7 +314,6 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     parent
   });
 
-  const appShell = parent.closest<HTMLElement>(".app-shell");
   const initialShellHeight = appShell?.style.height ?? "";
   const visualViewport = window.visualViewport;
   let viewportFrame = 0;
@@ -311,6 +339,13 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
   redoButton?.addEventListener("click", () => redo(view), { signal: buttonListeners.signal });
 
   const actionMenu = document.querySelector<HTMLDetailsElement>("#action-menu");
+  const selectLineButton = document.querySelector<HTMLButtonElement>("#select-line-button");
+  selectLineButton?.addEventListener("click", () => {
+    const line = view.state.doc.lineAt(view.state.selection.main.head);
+    view.dispatch({ selection: { anchor: line.from, head: line.to } });
+    view.focus();
+    closeActionMenu();
+  }, { signal: buttonListeners.signal });
   const newScriptButton = document.querySelector<HTMLButtonElement>("#new-script-button");
   const importButton = document.querySelector<HTMLButtonElement>("#import-script-button");
   const exportButton = document.querySelector<HTMLButtonElement>("#export-script-button");

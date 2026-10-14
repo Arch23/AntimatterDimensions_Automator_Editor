@@ -28,6 +28,15 @@ root.innerHTML = `
         <details id="action-menu" class="action-menu">
           <summary class="tool-button action-menu-toggle"><span class="tool-label">Actions</span><span class="tool-icon" aria-hidden="true">⋯</span></summary>
           <div class="action-menu-popover" role="group" aria-label="Document actions">
+            <button id="select-line-button" class="action-menu-item" type="button">Select current line</button>
+            <label class="action-menu-item action-menu-toggle-setting"><input id="wrap-lines-toggle" type="checkbox"> Wrap long lines</label>
+            <label class="action-menu-item action-menu-select-setting" for="editor-font-size">Editor text size
+              <select id="editor-font-size" aria-label="Editor text size">
+                <option value="13px">Small</option>
+                <option value="15px">Medium</option>
+                <option value="18px">Large</option>
+              </select>
+            </label>
             <button id="new-script-button" class="action-menu-item" type="button">New script</button>
             <button id="import-script-button" class="action-menu-item" type="button">Import text file…</button>
             <button id="export-script-button" class="action-menu-item" type="button">Download script</button>

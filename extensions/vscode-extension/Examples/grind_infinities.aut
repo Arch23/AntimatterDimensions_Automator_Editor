@@ -1,8 +1,0 @@
-// Template: Grind Infinities
-notify "Running Template Grind Infinities (to 1e9)"
-studies nowait load name ACTV
-auto eternity off
-auto infinity 5s
-// Note: This template attempts to get all the Banked Infinities within a single Eternity
-wait infinities > 1.00e10
-eternity

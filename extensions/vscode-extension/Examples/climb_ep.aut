@@ -1,9 +1,0 @@
-// Template: Climb EP
-notify "Running Template Climb EP (to 1e3000)"
-auto infinity 2 seconds
-auto eternity 10 seconds
-while ep < 1e3000 {
-  studies nowait load name ACTV
-  studies respec
-  wait eternity
-}
