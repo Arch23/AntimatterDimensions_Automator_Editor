@@ -21,6 +21,8 @@ corepack pnpm dev
 
 ## Language assistance
 
+The status bar shows the game-style character count against the 10,000-character per-script limit. It normalizes line endings and excludes empty lines to match the shared language logic; the counter turns red when the limit is exceeded.
+
 - Type a command or parameter prefix, or press `Ctrl+Space`, to open shared Automator completions filtered to the current context. Use the arrow keys and `Enter` to select; on touch screens, tap an option.
 - Select **Issues** to open the syntax diagnostics list. Click an item to jump to its source line. Diagnostics cover only the syntax checks implemented by this project; the game remains the authority on whether a script can run.
 - Completion suggestions are contextual and do not cover every valid game input. Browser snippet expansion is not supported; `{name}` references remain ordinary source text.

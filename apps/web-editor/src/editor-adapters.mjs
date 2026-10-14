@@ -1,5 +1,3 @@
-"use strict";
-
 function completionStart(linePrefix, lineFrom, item) {
   if (item.replaceLine) {
     const indentation = linePrefix.match(/^\s*/)?.[0].length ?? 0;
@@ -31,4 +29,4 @@ function diagnosticRange(line, diagnostic) {
   return { from: line.from + start, to: line.from + end };
 }
 
-module.exports = { completionStart, completionFilterText, diagnosticRange };
+export { completionStart, completionFilterText, diagnosticRange };

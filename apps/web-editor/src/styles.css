@@ -146,7 +146,8 @@ button { font: inherit; }
   font-size: 11px;
 }
 .status-hint { margin-left: auto; }
-#draft-status { flex: 0 0 auto; }
+#draft-status, #character-count { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+#character-count[data-state="error"] { color: #ff9dab; font-weight: 650; }
 #action-feedback { margin-left: auto; }
 #draft-status[data-state="error"], #action-feedback[data-state="error"] { color: #ff9dab; }
 #action-feedback[data-state="success"] { color: #a4d8bd; }

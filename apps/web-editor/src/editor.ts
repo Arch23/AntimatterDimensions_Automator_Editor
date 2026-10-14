@@ -28,6 +28,8 @@ import {
   completionItems,
   formatScript,
   FormattingError,
+  MAX_SCRIPT_CHARACTERS,
+  scriptCharacterCount,
   validate,
   type AutomatorCompletionItem,
   type AutomatorDiagnostic
@@ -35,7 +37,7 @@ import {
 import { tokenizeAutomatorLine as tokenizeLine } from "@adme/automator-language/highlighting";
 import initialScript from "../../../extensions/vscode-extension/Examples/climb_ep.aut?raw";
 import { automatorLanguage } from "./automator-language";
-import { completionFilterText, completionStart, diagnosticRange } from "./editor-adapters.cjs";
+import { completionFilterText, completionStart, diagnosticRange } from "./editor-adapters.mjs";
 import { readDraft, writeDraft, type Draft } from "./storage";
 
 const automatorHighlighting = HighlightStyle.define([
@@ -183,6 +185,19 @@ function setFeedback(message: string, state: "success" | "error" | "info" = "inf
   feedback.dataset.state = state;
 }
 
+function updateCharacterCount(source: string): void {
+  const counter = document.querySelector<HTMLElement>("#character-count");
+  if (!counter) return;
+  const count = scriptCharacterCount(source);
+  const overLimit = count > MAX_SCRIPT_CHARACTERS;
+  const formattedCount = count.toLocaleString("en-US");
+  const formattedLimit = MAX_SCRIPT_CHARACTERS.toLocaleString("en-US");
+  counter.textContent = `${formattedCount} / ${formattedLimit} chars`;
+  counter.dataset.state = overLimit ? "error" : "normal";
+  counter.setAttribute("aria-label", `${formattedCount} of ${formattedLimit} characters${overLimit ? ", over the game limit" : ""}`);
+  counter.title = `Game-style character count: blank lines are excluded and line endings are normalized. Limit: ${formattedLimit} characters.`;
+}
+
 function setDraftStatus(message: string, state: "saved" | "saving" | "error" | "ready"): void {
   const status = document.querySelector<HTMLElement>("#draft-status");
   if (!status) return;
@@ -252,6 +267,7 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
         EditorView.contentAttributes.of({ "aria-label": "Automator script editor" }),
         EditorView.updateListener.of(update => {
           if (update.docChanged) {
+            updateCharacterCount(update.state.doc.toString());
             renderDiagnostics(update.view, lintDiagnostics(update.state.doc.toString(), update.state.doc));
             scheduleDraftSave();
           }
@@ -423,6 +439,7 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
   }, { signal: buttonListeners.signal });
 
   if (recoveryDraft && recoveryPanel) recoveryPanel.hidden = false;
+  updateCharacterCount(view.state.doc.toString());
   renderDiagnostics(view, lintDiagnostics(view.state.doc.toString(), view.state.doc));
   return {
     view,

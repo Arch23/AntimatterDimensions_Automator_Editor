@@ -59,7 +59,7 @@ root.innerHTML = `
       </section>
     </main>
     <footer class="statusbar">
-      <span>Automator</span><span>Spaces: 2</span><span id="draft-status">Draft: waiting for edits</span>
+      <span>Automator</span><span>Spaces: 2</span><span id="character-count" data-state="normal" aria-label="Loading character count">0 / 10,000 chars</span><span id="draft-status">Draft: waiting for edits</span>
       <span id="action-feedback" class="action-feedback" role="status" aria-live="polite">Long lines scroll horizontally · Ctrl-Space for suggestions</span>
     </footer>
   </div>

@@ -40,7 +40,7 @@ corepack pnpm --filter @adme/web-editor dev
 
 Open <http://localhost:5173/>. Keep the terminal running while using the app; press `Ctrl+C` to stop it. More web-editor commands and current browser limitations are documented in [apps/web-editor/README.md](apps/web-editor/README.md).
 
-The browser editor currently provides editing, syntax highlighting, shared contextual completions and syntax diagnostics, text-file import/download, clipboard actions, local draft recovery, and safe indentation formatting. Browser snippet expansion and offline caching are not included. The web editor provides a PWA manifest and app icon metadata for installation. GitHub Pages deployment is configured by the web-editor workflow; see the plan and web-editor README for setup and remaining review.
+The browser editor currently provides editing, syntax highlighting, shared contextual completions and syntax diagnostics, text-file import/download, clipboard actions, local draft recovery, safe indentation formatting, and a game-style character counter for the 10,000-character script limit. Browser snippet expansion and offline caching are not included. The web editor provides a PWA manifest and app icon metadata for installation. GitHub Pages deployment is configured by the web-editor workflow; see the plan and web-editor README for setup and remaining review.
 
 ## Run the VS Code extension
 

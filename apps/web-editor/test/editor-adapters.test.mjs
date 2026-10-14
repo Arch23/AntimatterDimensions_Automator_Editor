@@ -1,9 +1,7 @@
-"use strict";
-
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const { completionItems, validate } = require("../../../packages/automator-language/src");
-const { completionFilterText, completionStart, diagnosticRange } = require("../src/editor-adapters.cjs");
+import test from "node:test";
+import assert from "node:assert/strict";
+import { completionItems, validate } from "../../../packages/automator-language/src/index.js";
+import { completionFilterText, completionStart, diagnosticRange } from "../src/editor-adapters.mjs";
 
 test("web completion mapping replaces the matching word within multiword labels", () => {
   const items = completionItems("wait in");
