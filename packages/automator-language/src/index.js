@@ -211,14 +211,19 @@ function validateCommand(text, line, diagnostics, opensBlock) {
 
   match = text.match(/^studies\s+(?:nowait\s+)?purchase\s+(.+)$/i);
   if (match) {
-    const list = match[1].trim();
+    let list = match[1].trim();
+    // The game accepts an EC suffix after the study list: |N unlocks the EC,
+    // and |N! also starts it. Keep pipes inside entries (eg. 171|0) intact.
+    const ecSuffix = list.match(/\|(1[0-2]|[1-9])(!)?$/i);
+    const isChoiceStudy = /^\d+\|[01]$/.test(list);
+    if (ecSuffix && !isChoiceStudy) list = list.slice(0, -ecSuffix[0].length).trim();
     if (variableRegex.test(list)) return;
     const items = list.split(",").map(item => item.trim().toLowerCase());
     if (items.length > 0 && items.every(item =>
       studyAliases.includes(item) ||
       /^\d+(?:\|\d+)?$/.test(item) ||
       /^\d+\s*-\s*\d+$/.test(item)
-    )) return;
+    ) && (!ecSuffix || list.length > 0)) return;
     fail("Expected a Time Study list (IDs, exported choice IDs, ranges, aliases, or a variable name).");
     return;
   }

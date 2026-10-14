@@ -29,7 +29,7 @@ studies nowait load name dil
 NAME
 STUDIES PURCHASE
 SYNTAX
-studies [nowait] purchase study_list
+studies [nowait] purchase study_list[|ec_number[!]]
 DESCRIPTION
 Purchase Time Studies specified from a list of Time Studies.
 INPUTS
@@ -38,11 +38,12 @@ If present, the Automator will purchase as many studies as possible before conti
 study_list
 The exported Time Study tree format is supported here, which is simply a list of Time Study IDs separated by commas. This command also supports a more flexible formatting, additionally allowing ranges of studies (for example, 11-62) and the following aliases:
 antimatter, infinity, time, active, passive, idle, light, dark
-A variable name may be used in place of the entire Time Study list as well (see the definition panel), although in that case the shorthand ranges and aliases are not allowed.
+A variable name may be used in place of the entire Time Study list as well (see the definition panel), although in that case the shorthand ranges and aliases are not allowed. Append | followed by an Eternity Challenge number (1-12) to unlock that EC along with the studies. Add ! after the number to start the EC as well (for example, ...|12!). If a variable contains an EC, an EC specified in the command takes precedence.
 USAGE EXAMPLES
 studies nowait purchase 11,21,31
 studies purchase 11-62, antimatter, 111, idle
 studies nowait purchase ec6Studies
+studies purchase firstRows, 181|12!
 
 NAME
 PRESTIGE

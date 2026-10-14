@@ -145,10 +145,10 @@ studies nowait load name dil
 #### Purchase studies
 
 ```text
-studies [nowait] purchase study_list
+studies [nowait] purchase study_list[|ec_number[!]]
 ```
 
-`study_list` may be a comma-separated list of exported Time Study IDs. Exported choice-study entries may include a pipe and choice index, such as `171|0`. Flexible lists also allow ranges and these aliases: `antimatter`, `infinity`, `time`, `active`, `passive`, `idle`, `light`, and `dark`.
+`study_list` may be a comma-separated list of exported Time Study IDs. Exported choice-study entries may include a pipe and choice index, such as `171|0`. Flexible lists also allow ranges and these aliases: `antimatter`, `infinity`, `time`, `active`, `passive`, `idle`, `light`, and `dark`. Append `|N` (where N is 1–12) to unlock that Eternity Challenge along with the studies; append `!` after the number to start it too. A defined variable can still replace the entire study list, including when followed by this suffix. If a variable contains an Eternity Challenge, a `|` written in the command takes precedence over it.
 
 A defined variable can replace the entire study list, but aliases and shorthand ranges cannot be combined with a variable. As with preset loading, `nowait` determines whether the command waits and retries to purchase further studies or continues after purchasing as many as possible.
 
@@ -156,6 +156,7 @@ A defined variable can replace the entire study list, but aliases and shorthand 
 studies nowait purchase 11,21,31
 studies purchase 11-62, antimatter, 111, idle
 studies nowait purchase ec6Studies
+studies purchase firstRows, 181|12!
 ```
 
 ### Prestige, unlock, and start
