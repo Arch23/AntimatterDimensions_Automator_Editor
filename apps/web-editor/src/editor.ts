@@ -239,7 +239,16 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     state: EditorState.create({
       doc: draftRead.draft?.text ?? initialScript,
       extensions: [
-        lineNumbers(),
+        lineNumbers({
+          domEventHandlers: {
+            click(view, block) {
+              const line = view.state.doc.lineAt(block.from);
+              view.dispatch({ selection: { anchor: line.from, head: line.to } });
+              view.focus();
+              return true;
+            }
+          }
+        }),
         highlightActiveLineGutter(),
         highlightSpecialChars(),
         history(),
@@ -275,6 +284,26 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     }),
     parent
   });
+
+  const appShell = parent.closest<HTMLElement>(".app-shell");
+  const initialShellHeight = appShell?.style.height ?? "";
+  const visualViewport = window.visualViewport;
+  let viewportFrame = 0;
+  const syncVisibleViewport = () => {
+    if (!appShell || !visualViewport) return;
+    cancelAnimationFrame(viewportFrame);
+    viewportFrame = requestAnimationFrame(() => {
+      appShell.style.height = `${visualViewport.height}px`;
+      if (view.hasFocus) {
+        view.dispatch({
+          effects: EditorView.scrollIntoView(view.state.selection.main.head, { y: "nearest" })
+        });
+      }
+    });
+  };
+  visualViewport?.addEventListener("resize", syncVisibleViewport, { signal: buttonListeners.signal });
+  window.addEventListener("resize", syncVisibleViewport, { signal: buttonListeners.signal });
+  syncVisibleViewport();
 
   const undoButton = document.querySelector<HTMLButtonElement>("#undo-button");
   const redoButton = document.querySelector<HTMLButtonElement>("#redo-button");
@@ -420,6 +449,8 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     destroy() {
       persistDraft();
       buttonListeners.abort();
+      cancelAnimationFrame(viewportFrame);
+      if (appShell) appShell.style.height = initialShellHeight;
       view.destroy();
     }
   };
