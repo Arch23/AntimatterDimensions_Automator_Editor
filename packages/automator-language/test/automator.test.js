@@ -135,19 +135,21 @@ test("reports missing and unmatched braces", () => {
 });
 
 test("enforces the 10,000-character per-script limit", () => {
-  assert.deepEqual(validate(`#${"x".repeat(MAX_SCRIPT_CHARACTERS - 2)}`), []);
-  const diagnostics = validate(`#${"x".repeat(MAX_SCRIPT_CHARACTERS - 1)}`);
+  assert.deepEqual(validate(`#${"x".repeat(MAX_SCRIPT_CHARACTERS - 1)}`), []);
+  const diagnostics = validate(`#${"x".repeat(MAX_SCRIPT_CHARACTERS)}`);
   assert.equal(diagnostics.length, 1);
   assert.match(diagnostics[0].message, /cannot exceed 10,000 characters/);
   assert.equal(diagnostics[0].line, 0);
-  assert.equal(diagnostics[0].start, MAX_SCRIPT_CHARACTERS);
-  assert.equal(diagnostics[0].end, MAX_SCRIPT_CHARACTERS);
+  assert.equal(diagnostics[0].start, MAX_SCRIPT_CHARACTERS + 1);
+  assert.equal(diagnostics[0].end, MAX_SCRIPT_CHARACTERS + 1);
 });
 
 test("counts script characters with normalized line endings and omitted blank lines", () => {
-  assert.equal(scriptCharacterCount("one\r\ntwo\r\n\r\n"), 8);
-  assert.equal(scriptCharacterCount("one\ntwo\n\n"), 8);
-  assert.equal(scriptCharacterCount("  stop  \n\n"), 9);
+  assert.equal(scriptCharacterCount("one\r\ntwo\r\n\r\n"), 7);
+  assert.equal(scriptCharacterCount("one\ntwo\n\n"), 7);
+  assert.equal(scriptCharacterCount("  stop  \n\n"), 8);
+  const climbEp = fs.readFileSync(path.join(__dirname, "../../../extensions/vscode-extension/Examples/climb_ep.aut"), "utf8");
+  assert.equal(scriptCharacterCount(climbEp), 204);
 });
 
 test("formats block indentation while preserving line content and line endings", () => {

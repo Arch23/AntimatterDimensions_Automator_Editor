@@ -64,10 +64,10 @@ const variableRegex = /^[a-z_][a-z0-9_]*$/i;
 const MAX_SCRIPT_CHARACTERS = 10000;
 
 function scriptCharacterCount(source) {
-  return source
+  const lines = source
     .split(/\r\n|\r|\n/)
-    .filter(line => line.length > 0)
-    .reduce((count, line) => count + line.length + 1, 0);
+    .filter(line => line.length > 0);
+  return lines.reduce((count, line) => count + line.length, 0) + Math.max(0, lines.length - 1);
 }
 
 class FormattingError extends Error {
