@@ -213,7 +213,6 @@ export interface AutomatorEditor {
 export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
   const buttonListeners = new AbortController();
   const draftRead = readDraft();
-  let recoveryDraft = draftRead.draft;
   let saveTimer: ReturnType<typeof setTimeout> | undefined;
   let draftDirty = false;
   let scheduleDraftSave = () => {};
@@ -223,7 +222,7 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     setDraftStatus("storage unavailable", "error");
     setFeedback(draftRead.error, "error");
   } else if (draftRead.draft) {
-    setDraftStatus("saved draft found", "saved");
+    setDraftStatus("saved draft loaded", "saved");
   } else {
     setDraftStatus("autosave ready", "ready");
   }
@@ -238,7 +237,7 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
 
   const view = new EditorView({
     state: EditorState.create({
-      doc: initialScript,
+      doc: draftRead.draft?.text ?? initialScript,
       extensions: [
         lineNumbers(),
         highlightActiveLineGutter(),
@@ -290,9 +289,6 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
   const copyButton = document.querySelector<HTMLButtonElement>("#copy-button");
   const formatButton = document.querySelector<HTMLButtonElement>("#format-button");
   const importInput = document.querySelector<HTMLInputElement>("#import-file");
-  const recoveryPanel = document.querySelector<HTMLElement>("#draft-recovery");
-  const restoreDraftButton = document.querySelector<HTMLButtonElement>("#restore-draft-button");
-  const dismissDraftButton = document.querySelector<HTMLButtonElement>("#dismiss-draft-button");
 
   const closeActionMenu = () => { if (actionMenu) actionMenu.open = false; };
   const replaceDocument = (text: string) => {
@@ -323,17 +319,11 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     setDraftStatus("saving…", "saving");
     saveTimer = setTimeout(persistDraft, 450);
   };
-  const hideRecoveryPrompt = () => {
-    if (recoveryPanel) recoveryPanel.hidden = true;
-    recoveryDraft = null;
-  };
-
   window.addEventListener("pagehide", persistDraft, { signal: buttonListeners.signal });
   newScriptButton?.addEventListener("click", () => {
     closeActionMenu();
     if (view.state.doc.length > 0 &&
       !window.confirm("Replace the current script with a new empty script? This also replaces any saved browser draft.")) return;
-    hideRecoveryPrompt();
     exportFilename = "automator-script.aut";
     draftDirty = true;
     replaceDocument("");
@@ -354,7 +344,6 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
       const text = await file.text();
       if (view.state.doc.length > 0 &&
         !window.confirm(`Replace the current script with '${file.name}'? This also replaces any saved browser draft.`)) return;
-      hideRecoveryPrompt();
       exportFilename = file.name || "automator-script.aut";
       draftDirty = true;
       replaceDocument(text);
@@ -424,21 +413,6 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     }
   }, { signal: buttonListeners.signal });
 
-  restoreDraftButton?.addEventListener("click", () => {
-    if (!recoveryDraft) return;
-    const text = recoveryDraft.text;
-    hideRecoveryPrompt();
-    draftDirty = true;
-    replaceDocument(text);
-    persistDraft();
-    setFeedback("Restored the saved browser draft.", "success");
-  }, { signal: buttonListeners.signal });
-  dismissDraftButton?.addEventListener("click", () => {
-    hideRecoveryPrompt();
-    setFeedback("Kept the current script open. The saved draft has not been changed.", "info");
-  }, { signal: buttonListeners.signal });
-
-  if (recoveryDraft && recoveryPanel) recoveryPanel.hidden = false;
   updateCharacterCount(view.state.doc.toString());
   renderDiagnostics(view, lintDiagnostics(view.state.doc.toString(), view.state.doc));
   return {

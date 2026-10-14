@@ -102,10 +102,6 @@ button { font: inherit; }
 .action-menu-popover { position: absolute; top: calc(100% + 7px); right: 0; z-index: 30; display: flex; width: min(260px, calc(100vw - 20px)); flex-direction: column; gap: 3px; padding: 6px; border: 1px solid #3a4658; border-radius: 11px; background: #1a202b; box-shadow: 0 10px 30px #0009; }
 .action-menu-item { min-height: 42px; padding: 8px 11px; border: 0; border-radius: 7px; background: transparent; color: #e2e8f0; text-align: left; cursor: pointer; touch-action: manipulation; }
 .action-menu-item:hover, .action-menu-item:focus-visible { outline: none; background: #2b3d59; }
-.draft-recovery { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; border-bottom: 1px solid #3e4f6c; background: #202d44; color: #d9e3f4; font-size: 12px; }
-.draft-recovery-actions { display: flex; flex: 0 0 auto; gap: 7px; }
-.draft-recovery button { min-height: 36px; padding: 0 11px; border: 1px solid #526a94; border-radius: 8px; background: #2a3d5c; color: #fff; cursor: pointer; touch-action: manipulation; }
-.draft-recovery button:hover { background: #354b70; }
 
 .workspace { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; padding: 0; }
 .editor-panel { width: 100%; min-width: 0; min-height: 0; flex: 1 1 auto; overflow: hidden; background: #10141c; }
@@ -166,9 +162,6 @@ button { font: inherit; }
   .diagnostics-panel { max-height: min(38dvh, 260px); }
   .diagnostics-heading { align-items: flex-start; flex-direction: column; gap: 3px; padding: 8px 10px 6px; }
   .diagnostic-item { align-items: flex-start; flex-direction: column; gap: 3px; padding: 7px 10px; }
-  .draft-recovery { align-items: flex-start; flex-direction: column; padding: 8px 10px; }
-  .draft-recovery-actions { width: 100%; }
-  .draft-recovery button { flex: 1; }
   .statusbar { min-height: 25px; flex-wrap: wrap; gap: 4px 9px; padding: 4px 10px; font-size: 10px; }
   #draft-status { margin-left: auto; }
   #action-feedback { flex: 1 0 100%; min-height: 13px; margin: 0; }

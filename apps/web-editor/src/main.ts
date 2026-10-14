@@ -39,13 +39,6 @@ root.innerHTML = `
         <input id="import-file" type="file" accept=".aut,.automator,.txt,text/plain" hidden>
       </div>
     </header>
-    <aside id="draft-recovery" class="draft-recovery" role="status" hidden>
-      <span>A saved browser draft is available. Restore it or dismiss this prompt to keep the current script open.</span>
-      <div class="draft-recovery-actions">
-        <button id="restore-draft-button" type="button">Restore draft</button>
-        <button id="dismiss-draft-button" type="button">Dismiss</button>
-      </div>
-    </aside>
     <main class="workspace">
       <section class="editor-panel" aria-label="Script editor">
         <div id="editor"></div>

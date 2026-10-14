@@ -27,7 +27,7 @@ The status bar shows the game-style character count against the 10,000-character
 - Select **Issues** to open the syntax diagnostics list. Click an item to jump to its source line. Diagnostics cover only the syntax checks implemented by this project; the game remains the authority on whether a script can run.
 - Completion suggestions are contextual and do not cover every valid game input. Browser snippet expansion is not supported; `{name}` references remain ordinary source text.
 - Open **Actions** to create a new script, import a text file, download the current script, copy all text, paste at the current selection, or format indentation with the shared safe formatter.
-- Edits are saved to browser local storage after a short pause. If a draft is found at startup, choose **Restore draft** to load it or **Dismiss** to keep the current script. New Script asks before replacing nonempty content. Clipboard use depends on browser permission and a secure context such as `localhost`.
+- Edits are saved to browser local storage after a short pause and loaded automatically at startup when a saved draft exists. New Script asks before replacing nonempty content. Clipboard use depends on browser permission and a secure context such as `localhost`.
 
 ## Production build
 
