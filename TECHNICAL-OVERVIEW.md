@@ -88,4 +88,4 @@ When changing language behavior:
 4. Add or adjust cases using focused source strings and representative `.aut` fixtures.
 5. Keep runtime-validity claims within the limits of what the shared validator actually checks.
 
-The broader sequence of remaining work and product decisions lives in [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md).
+Current browser limitations and deployment setup are documented in [the web editor README](apps/web-editor/README.md).

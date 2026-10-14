@@ -1,5 +1,7 @@
 # Automator Web Editor
 
+Unofficial browser editor for scripts compatible with Antimatter Dimensions Automator. This project is not affiliated with or endorsed by the Antimatter Dimensions developers.
+
 ## Run locally
 
 From the repository root, install workspace dependencies if needed and start the Vite development server:
@@ -45,4 +47,4 @@ Vite uses `/` as the default base path for local development. Set `VITE_BASE_PAT
 
 The repository workflow at `.github/workflows/deploy-web-editor.yml` installs the pnpm workspace, runs both Node test suites, builds the web app with the repository-specific Pages path, and publishes `apps/web-editor/dist`. It runs for pull requests and pushes that change the web editor, shared language package, example scripts, workspace manifests, or the workflow itself. Deployment is limited to pushes on the repository's default branch.
 
-To enable publishing, open **Settings > Pages** and select **GitHub Actions** as the build and deployment source. The workflow publishes a project site at `https://<owner>.github.io/<repository>/`; for a user or organization site named `<owner>.github.io`, it builds with the root path. Pull requests run tests and a production build without deploying. PWA and offline caching are not configured.
+To enable publishing, open **Settings > Pages** and select **GitHub Actions** as the build and deployment source. The workflow publishes a project site at `https://<owner>.github.io/<repository>/`; for a user or organization site named `<owner>.github.io`, it builds with the root path. Pull requests run tests and a production build without deploying. The web app includes a PWA manifest and icon metadata for browser installation. Offline caching and a service worker are not configured.

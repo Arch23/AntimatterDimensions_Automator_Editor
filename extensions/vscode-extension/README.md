@@ -1,6 +1,6 @@
-# Antimatter Dimensions Automator for VS Code
+# Automator Editor for VS Code
 
-This extension provides basic live diagnostics and IntelliSense for Antimatter Dimensions Automator scripts.
+Unofficial VS Code support for scripts compatible with Antimatter Dimensions Automator. This project is not affiliated with or endorsed by the Antimatter Dimensions developers.
 
 ## Use
 
