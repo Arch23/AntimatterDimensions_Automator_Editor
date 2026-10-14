@@ -1,5 +1,9 @@
 # Repository instructions
 
+## Testing requirements
+
+- Always run the relevant project tests after making changes and before reporting completion. Report failures or unavailable tests explicitly.
+
 ## Security requirements
 
 - Never add secrets, credentials, access tokens, refresh tokens, private keys, service-account files, OAuth client secrets, production environment files, real user data, or local database files to Git.

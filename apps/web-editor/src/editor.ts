@@ -11,7 +11,7 @@ import {
 } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab, redo, undo } from "@codemirror/commands";
 import { bracketMatching, indentOnInput, indentUnit, syntaxHighlighting, HighlightStyle } from "@codemirror/language";
-import { EditorState } from "@codemirror/state";
+import { Compartment, EditorState } from "@codemirror/state";
 import { lintGutter, linter, type Diagnostic } from "@codemirror/lint";
 import {
   drawSelection,
@@ -236,17 +236,12 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
 
   const wrapToggle = document.querySelector<HTMLInputElement>("#wrap-lines-toggle");
   const appShell = parent.closest<HTMLElement>(".app-shell");
+  const wrapping = new Compartment();
   const wrapPreferenceKey = "adme.automator-web-editor.wrap-lines.v1";
   let wrapLines = false;
   try { wrapLines = window.localStorage.getItem(wrapPreferenceKey) === "true"; } catch { /* Optional preference. */ }
   if (wrapToggle) wrapToggle.checked = wrapLines;
   appShell?.classList.toggle("wrap-lines", wrapLines);
-  wrapToggle?.addEventListener("change", () => {
-    wrapLines = wrapToggle.checked;
-    appShell?.classList.toggle("wrap-lines", wrapLines);
-    try { window.localStorage.setItem(wrapPreferenceKey, String(wrapLines)); } catch { /* Keep this session's setting. */ }
-  }, { signal: buttonListeners.signal });
-
   const fontSizeSelect = document.querySelector<HTMLSelectElement>("#editor-font-size");
   const fontSizePreferenceKey = "adme.automator-web-editor.font-size.v1";
   const allowedFontSizes = new Set(["13px", "15px", "18px"]);
@@ -301,6 +296,7 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
           indentWithTab
         ]),
         editorTheme,
+        wrapping.of(wrapLines ? EditorView.lineWrapping : []),
         EditorView.contentAttributes.of({ "aria-label": "Automator script editor" }),
         EditorView.updateListener.of(update => {
           if (update.docChanged) {
@@ -313,6 +309,12 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
     }),
     parent
   });
+  wrapToggle?.addEventListener("change", () => {
+    wrapLines = wrapToggle.checked;
+    appShell?.classList.toggle("wrap-lines", wrapLines);
+    view.dispatch({ effects: wrapping.reconfigure(wrapLines ? EditorView.lineWrapping : []) });
+    try { window.localStorage.setItem(wrapPreferenceKey, String(wrapLines)); } catch { /* Keep this session's setting. */ }
+  }, { signal: buttonListeners.signal });
 
   const initialShellHeight = appShell?.style.height ?? "";
   const visualViewport = window.visualViewport;
@@ -339,6 +341,15 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
   redoButton?.addEventListener("click", () => redo(view), { signal: buttonListeners.signal });
 
   const actionMenu = document.querySelector<HTMLDetailsElement>("#action-menu");
+  document.addEventListener("pointerdown", event => {
+    if (actionMenu?.open && !actionMenu.contains(event.target as Node)) actionMenu.open = false;
+  }, { signal: buttonListeners.signal });
+  actionMenu?.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      actionMenu.open = false;
+      actionMenu.querySelector<HTMLElement>("summary")?.focus();
+    }
+  }, { signal: buttonListeners.signal });
   const selectLineButton = document.querySelector<HTMLButtonElement>("#select-line-button");
   selectLineButton?.addEventListener("click", () => {
     const line = view.state.doc.lineAt(view.state.selection.main.head);
