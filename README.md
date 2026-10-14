@@ -68,6 +68,39 @@ corepack pnpm package:vscode
 
 The VSIX is written to `bin/`, which is ignored by Git. Install it in VS Code with **Extensions: Install from VSIX…**.
 
+## Security checks
+
+Install Gitleaks **8.30.1** from the [official releases](https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1) and make sure `gitleaks` is on `PATH`. The repository config extends Gitleaks' default rules. Checks fail if the pinned version is unavailable; they do not silently skip scanning.
+
+After cloning, install this clone's local Git hooks:
+
+```sh
+corepack pnpm security:install-hooks
+```
+
+The pre-commit hook checks the Git index for prohibited filenames and scans the staged file contents with Gitleaks. The pre-push hook runs the complete security command. Hooks live in `.git/hooks`, are not committed, and must be installed for each clone.
+
+Run the complete check at any time:
+
+```sh
+corepack pnpm security:check
+```
+
+This checks prohibited filenames in the Git index (including paths tracked before ignore rules), changed and untracked working-tree file contents, staged file contents, and all commits reachable from local Git refs. The working-tree and staged scans are separate because Git can contain staged content that differs from the working copy. It does not inspect remote refs that have not been fetched, detect every possible secret format, or replace credential rotation and history cleanup. CI fetches full history and runs this command on all pull requests and pushes to `main`.
+
+Run the isolated harness verification with `corepack pnpm security:test`. It uses only temporary repositories and unmistakably fake values.
+
+### Security findings and remediation
+
+- Keep untracked local credentials out of Git and ensure `.gitignore` covers them.
+- For a staged secret, unstage it and remove it from the staged change, then verify `corepack pnpm security:staged` passes.
+- For an already tracked sensitive file, remove only its index entry with `git rm --cached -- <path>`; this keeps the local copy. Then run `corepack pnpm security:check`.
+- If a real secret was committed or pushed, revoke or rotate it first. Then assess history cleanup and coordinate with collaborators; this harness never rewrites history or deletes local files.
+- Review confirmed false positives narrowly. For a sensitive filename, add one exact path with a specific `reason` and `reviewedBy` to `.security-allowlist.json`. For a Gitleaks finding, add only its exact fingerprint to `.gitleaksignore` and document the reason here. Both exceptions remain subject to secret scanning when content is scanned. Never add broad path exclusions.
+- `.env.example` is the only automatic filename exception; keep it sanitized and use placeholders. It is still scanned for secrets.
+
+No Firebase configuration or Firestore rules exist in this repository at the time this harness was added. If Firebase is added later, treat web configuration as public and enforce authenticated UID ownership in Firestore rules; never add Admin SDK credentials or private user data.
+
 ## Project status
 
 The shared language package, conservative formatter, browser editor surface, cross-editor highlighting, contextual completions, syntax diagnostics, document actions, local draft recovery, and GitHub Pages deployment are implemented. The web editor has a PWA manifest and app icons; offline caching remains a possible future enhancement.

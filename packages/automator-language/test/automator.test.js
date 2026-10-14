@@ -48,11 +48,23 @@ test("snippet references are highlighted only when the extension opts in", () =>
 });
 
 test("shared highlighting tokenizes representative Automator examples consistently", () => {
-  const examplesDirectory = path.resolve(__dirname, "../../../extensions/vscode-extension/Examples");
-  const fixtures = fs.readdirSync(examplesDirectory).filter(filename => filename.endsWith(".aut"));
-  assert.ok(fixtures.length > 0, "Expected representative .aut fixtures");
-  for (const fixture of fixtures) {
-    const source = fs.readFileSync(path.join(examplesDirectory, fixture), "utf8");
+  const fixtures = {
+    "commands.aut": [
+      "studies nowait purchase 11-62, idle",
+      "auto eternity 1e5 x highest",
+      'notify "ready"',
+      "// stop after the target is reached"
+    ].join("\n"),
+    "nested-blocks.aut": [
+      "if ep > 1e100 {",
+      "  wait black hole bh1",
+      "  until reality {",
+      "    pause 10 seconds",
+      "  }",
+      "}"
+    ].join("\n")
+  };
+  for (const [fixture, source] of Object.entries(fixtures)) {
     for (const line of source.split(/\r?\n/)) {
       const tokens = tokenizeAutomatorLine(line);
       let previousEnd = 0;
@@ -148,8 +160,8 @@ test("counts script characters with normalized line endings and omitted blank li
   assert.equal(scriptCharacterCount("one\r\ntwo\r\n\r\n"), 7);
   assert.equal(scriptCharacterCount("one\ntwo\n\n"), 7);
   assert.equal(scriptCharacterCount("  stop  \n\n"), 8);
-  const climbEp = fs.readFileSync(path.join(__dirname, "../../../extensions/vscode-extension/Examples/climb_ep.aut"), "utf8");
-  assert.equal(scriptCharacterCount(climbEp), 204);
+  const sample = 'stop\n\npause 10s\nnotify "ready"\n';
+  assert.equal(scriptCharacterCount(sample), 29);
 });
 
 test("formats block indentation while preserving line content and line endings", () => {

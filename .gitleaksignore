@@ -1,0 +1,2 @@
+# Add only reviewed Gitleaks fingerprints for confirmed false positives.
+# Include the finding fingerprint and document its justification in README.md.
