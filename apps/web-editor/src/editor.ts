@@ -14,7 +14,6 @@ import { bracketMatching, indentOnInput, indentUnit, syntaxHighlighting, Highlig
 import { Compartment, EditorState } from "@codemirror/state";
 import { lintGutter, linter, type Diagnostic } from "@codemirror/lint";
 import {
-  drawSelection,
   dropCursor,
   EditorView,
   highlightActiveLine,
@@ -67,8 +66,9 @@ const editorTheme = EditorView.theme({
     overscrollBehavior: "contain"
   },
   ".cm-content": {
-    width: "max-content",
-    minWidth: "100%",
+    flex: "1 1 0",
+    width: "0",
+    minWidth: "0",
     minHeight: "100%",
     padding: "14px 0",
     caretColor: "#82aaff"
@@ -84,7 +84,7 @@ const editorTheme = EditorView.theme({
   ".cm-activeLine": { backgroundColor: "#171d27" },
   ".cm-activeLineGutter": { color: "#c8d1e0", backgroundColor: "#171d27" },
   ".cm-cursor, .cm-dropCursor": { borderLeftColor: "#82aaff" },
-  "&.cm-focused .cm-selectionBackground, .cm-selectionBackground": { backgroundColor: "#376fb0" },
+  ".cm-content ::selection, .cm-content::selection": { backgroundColor: "#4b73b8", color: "#fff" },
   ".cm-matchingBracket": { color: "#c3e88d", outline: "1px solid #c3e88d" },
   ".cm-nonmatchingBracket": { color: "#ff5370", outline: "1px solid #ff5370" }
 }, { dark: true });
@@ -276,7 +276,6 @@ export function createAutomatorEditor(parent: HTMLElement): AutomatorEditor {
         highlightActiveLineGutter(),
         highlightSpecialChars(),
         history(),
-        drawSelection(),
         dropCursor(),
         indentUnit.of("  "),
         indentOnInput(),
