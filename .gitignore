@@ -4,6 +4,8 @@ node_modules/
 extensions/vscode-extension/vendor/
 /bin/
 apps/web-editor/dist/
+apps/web-editor/test-results/
+apps/web-editor/playwright-report/
 
 # Local credentials and production configuration. Sanitized templates stay tracked.
 .env

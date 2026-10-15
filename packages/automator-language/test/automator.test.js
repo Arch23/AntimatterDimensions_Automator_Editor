@@ -246,6 +246,23 @@ test("offers command and context-specific completions", () => {
   assert.ok(completionItems("wait black hole").some(item => item.label === "bh1"));
 });
 
+test("filters autobuyer type completions while typing the type", () => {
+  const infinity = completionItems("auto i").find(item => item.label === "infinity");
+  assert.ok(infinity);
+  assert.equal(infinity.replaceFrom, 5);
+  assert.deepEqual(completionItems("auto i").map(item => item.label), ["infinity"]);
+});
+
+test("autobuyer setting completion appends after the type", () => {
+  for (const [prefix, insertion] of [["auto infinity", " on"], ["auto infinity ", "on"]]) {
+    const on = completionItems(prefix).find(item => item.label === "on");
+    assert.ok(on);
+    assert.equal(on.insertText, insertion);
+    assert.equal(on.replaceFrom, prefix.length);
+    assert.equal(prefix.slice(0, on.replaceFrom) + on.insertText, "auto infinity on");
+  }
+});
+
 test("suggests nowait while typing its prefix", () => {
   for (const prefix of ["studies no", "eternity no", "infinity n", "unlock no"]) {
     const item = completionItems(prefix).find(suggestion => suggestion.label === "nowait");

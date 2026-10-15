@@ -13,6 +13,10 @@ corepack pnpm --filter @adme/web-editor dev
 
 Open <http://localhost:5173/> in a browser. Leave the terminal running while you use the editor; press `Ctrl+C` there to stop the server. After dependencies have been installed once, the `install` command can be skipped.
 
+## Tests
+
+Run `corepack pnpm test` for the language and web adapter tests. Browser level editor tests run with `corepack pnpm --filter @adme/web-editor exec playwright install chromium` followed by `corepack pnpm test:e2e`.
+
 You can also run the app scripts from this directory:
 
 ```powershell

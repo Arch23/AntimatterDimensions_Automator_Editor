@@ -4,6 +4,7 @@
   "packageManager": "pnpm@10.0.0",
   "scripts": {
     "test": "corepack pnpm --filter @adme/automator-language --filter @adme/web-editor test",
+    "test:e2e": "corepack pnpm --filter @adme/web-editor test:e2e",
     "package:vscode": "corepack pnpm --filter antimatter-dimensions-automator package",
     "security:check": "node scripts/security/check.mjs",
     "security:staged": "node scripts/security/check.mjs --staged",

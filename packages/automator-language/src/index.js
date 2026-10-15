@@ -431,15 +431,22 @@ function completionItems(linePrefix) {
     add("name", "Load a preset by name");
   } else if (/^studies\s+(?:nowait\s+)?purchase\b/.test(prefix)) {
     [...studyAliases, "11-62", "11,21,31"].forEach(value => add(value, "Time Study list or alias"));
-  } else if (/^auto$/.test(prefix)) {
-    ["infinity", "eternity", "reality"].forEach(value => add(value, "Autobuyer"));
+  } else if (/^auto(?:\s+\w*)?$/.test(prefix) &&
+    !["infinity", "eternity", "reality"].includes(prefix.match(/^auto\s+(\w+)$/)?.[1])) {
+    const partialType = prefix.match(/^auto\s+(\w*)$/)?.[1] ?? "";
+    ["infinity", "eternity", "reality"]
+      .filter(value => !partialType || value.startsWith(partialType))
+      .forEach(value => add(value, "Autobuyer", value, {
+        ...(partialType ? { replaceFrom: currentWordStart } : {})
+      }));
   } else if (/^auto\s+(infinity|eternity|reality)(?:\s+(.+))?$/.test(prefix)) {
     const [, type, rawSetting = ""] = prefix.match(/^auto\s+(infinity|eternity|reality)(?:\s+(.+))?$/);
     const setting = rawSetting.trim();
     if (!setting || /^(?:o|on|of|off)$/.test(setting)) {
-      ["on", "off"].forEach(value => add(value, "Autobuyer setting", value, {
-        ...(setting ? { replaceFrom: currentWordStart } : {})
-      }));
+      ["on", "off"].forEach(value => add(value, "Autobuyer setting",
+        setting ? value : `${/\s$/.test(linePrefix) ? "" : " "}${value}`, {
+          replaceFrom: setting ? currentWordStart : linePrefix.length
+        }));
     }
     if (!setting) {
       ["30s", "10 seconds"].forEach(value => add(value, "Autobuyer interval"));
